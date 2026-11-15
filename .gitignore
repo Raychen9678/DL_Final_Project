@@ -1,0 +1,23 @@
+# 資料、模型、輸出（太大或可重新產生）
+data/
+models/
+reports/
+submission*.csv
+*.zip
+*.hdf5
+
+# Kaggle 憑證，千萬不要上傳
+kaggle.json
+.kaggle/
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+
+# 系統
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
