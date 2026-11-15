@@ -55,12 +55,21 @@ src/train_lgbm.py                   LightGBM + 5 折 CV
 
 ## 分工
 
-| 成員 | 負責 |
+| 成員 | 負責 | 相關程式 |
+|---|---|---|
+| [組員 A] | 資料分析、簡報 | `src/eda.py` |
+| [組員 B] | 圖片模型（EfficientNet 微調、資料增強） | 待新增 |
+| [組員 C] | 特徵工程（metadata 特徵、病人內標準化） | `src/features.py` |
+| [組員 D] | LightGBM 調參、模型融合 | `src/train_lgbm.py` |
+| [組員 E] | 驗證流程、Kaggle 提交、GitHub | `src/metric.py`、`notebooks/` |
+
+| 週次 | 目標 |
 |---|---|
-| [姓名] | 資料分析、簡報 |
-| [姓名] | 圖片模型 |
-| [姓名] | Metadata 模型、融合 |
-| [姓名] | 驗證流程、Kaggle 提交 |
+| W12 | metadata baseline（CV pAUC 0.161）、5 頁進度簡報 |
+| W14 | 圖片 CNN baseline、10 頁進度簡報 |
+| W15 | CNN＋LightGBM 融合、繳交程式 |
+| W15–16 | 成果報告與口試 |
+| W17 | 書面報告、最終程式碼 |
 
 ## 資料來源
 
