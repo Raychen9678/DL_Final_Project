@@ -20,7 +20,8 @@
 | LightGBM + 正樣本加權 | 0.031 |
 | LightGBM 小模型 + 正則化 | 0.156 |
 | **+ 病人內標準化特徵** | **0.161** |
-| 圖片 CNN | 進行中 |
+| EfficientNet-B0（圖片） | 程式已完成，待在 Kaggle GPU 上訓練 |
+| LightGBM + CNN 融合 | 程式已完成，待 CNN 結果 |
 
 - 驗證集按 `patient_id` 切（StratifiedGroupKFold），同一位病人的圖不會同時出現在訓練和驗證
 - 病人內標準化：每顆病灶的特徵減掉同一位病人的平均，衡量「跟這個人其他痣比有多特別」
@@ -28,7 +29,15 @@
 
 ## 怎麼跑
 
-**在 Kaggle 上（提交用）**：比賽頁 → Code → New Notebook → File → Import Notebook，上傳 `notebooks/isic2024_baseline.ipynb`，Run All。提交前在 Settings 關掉 Internet，再 Save Version → Submit。
+**在 Kaggle 上**（比賽頁 → Code → New Notebook → File → Import Notebook）：
+
+| 順序 | Notebook | 設定 | 用途 |
+|---|---|---|---|
+| 1 | `isic2024_baseline.ipynb` | CPU，Internet 關 | metadata baseline，可直接提交 |
+| 2 | `isic2024_cnn_train.ipynb` | **GPU，Internet 開** | 訓練 CNN，輸出權重和 `oof_cnn.csv`；跑完按 Save Version |
+| 3 | `isic2024_submission.ipynb` | **GPU，Internet 關** | Add Input 加入第 2 個 notebook 的輸出，融合後提交 |
+
+第 3 個 notebook 開頭的 `CNN_DIR` 要改成第 2 個 notebook 輸出在右側 Input 顯示的路徑。
 
 **在自己電腦上（做實驗）**：
 
@@ -44,13 +53,16 @@ python src/train_lgbm.py       # 5 折 CV，約 1 分鐘
 ## 檔案
 
 ```
-notebooks/isic2024_baseline.ipynb   Kaggle 提交用的完整流程
+notebooks/isic2024_baseline.ipynb   metadata baseline
+notebooks/isic2024_cnn_train.ipynb  EfficientNet-B0 訓練（產生 CNN 特徵）
+notebooks/isic2024_submission.ipynb LightGBM + CNN 融合，最終提交
+report/書面報告_草稿.md               W17 書面報告草稿
 src/config.py                       路徑與參數
 src/download_data.py                下載資料
 src/eda.py                          資料分析
 src/features.py                     特徵工程
 src/metric.py                       官方 pAUC 評分
-src/train_lgbm.py                   LightGBM + 5 折 CV
+src/train_lgbm.py                   LightGBM + 5 折 CV（reports/oof_cnn.csv 存在時自動加入 CNN 特徵）
 ```
 
 ## 分工

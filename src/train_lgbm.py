@@ -30,6 +30,15 @@ def main() -> None:
     t0 = time.time()
     train, test = load_data()
     train, test, features = build_features(train, test)
+
+    # 模型融合：有 CNN 的 OOF 預測（Kaggle 上 isic2024_cnn_train 的輸出）就當成特徵
+    cnn_oof = REPORTS_DIR / "oof_cnn.csv"
+    if cnn_oof.exists():
+        train = train.merge(pd.read_csv(cnn_oof), on="isic_id", how="left")
+        train["cnn_pred_pnorm"] = train.groupby("patient_id")["cnn_pred"].rank(pct=True)
+        features = features + ["cnn_pred", "cnn_pred_pnorm"]
+        test = None  # 本機沒有測試圖片的 CNN 預測，submission 請用 Kaggle 的 isic2024_submission
+        print(f"已加入 CNN 特徵（{cnn_oof.name}）")
     print(f"train {train.shape}，惡性 {int(train.target.sum())} 筆，{len(features)} 個特徵")
 
     sgkf = StratifiedGroupKFold(n_splits=N_FOLDS, shuffle=True, random_state=SEED)
