@@ -17,6 +17,7 @@
 | | 看整體做法、用了哪些模型、結果如何 | [docs/02_模型與實驗.md](docs/02_模型與實驗.md) |
 | | 寫書面報告 | [report/書面報告_草稿.md](report/書面報告_草稿.md) |
 | | 看 W12 簡報 | [Canva 簡報](https://www.canva.com/design/DAHbJGLOTRo/V8vQRciYleZlanllEZBFSA/edit) |
+
 ---
 
 ## 三十秒摘要
