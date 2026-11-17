@@ -6,12 +6,12 @@
 
 ## 先看哪一份？
 
-| 你是 | 先看這份 |
+| 你想 | 看這份 |
 |---|---|
-| **第一次接觸這個專題** | 👉 [docs/00_專題說明.md](docs/00_專題說明.md)（白話版，10 分鐘） |
-| 要在 Kaggle 或自己電腦上跑程式 | [docs/01_環境與執行.md](docs/01_環境與執行.md) |
-| 想知道用了哪些模型、結果如何 | [docs/02_模型與實驗.md](docs/02_模型與實驗.md) |
-| 想知道自己負責什麼、什麼時候要交 | [docs/03_分工與時程.md](docs/03_分工與時程.md) |
+| **跑我負責的實驗** | 👉 [docs/01_操作說明.md](docs/01_操作說明.md)（照步驟點，不用裝東西） |
+| 搞懂這個專題在做什麼 | [docs/00_專題說明.md](docs/00_專題說明.md) |
+| 知道我負責哪個變因、什麼時候要交 | [docs/03_分工與時程.md](docs/03_分工與時程.md) |
+| 看用了哪些模型、結果如何 | [docs/02_模型與實驗.md](docs/02_模型與實驗.md) |
 | 寫書面報告 | [report/書面報告_草稿.md](report/書面報告_草稿.md) |
 
 ---
@@ -37,15 +37,14 @@
 
 詳細結果與消融實驗 → [docs/02_模型與實驗.md](docs/02_模型與實驗.md)
 
-## 快速開始
+## 快速開始（組員）
 
-```bash
-pip install -r requirements.txt
-python src/download_data.py   # 下載 metadata
-python src/train_mlp.py       # LR + MLP
-```
+1. 下載 [`notebooks/isic2024_image_models.ipynb`](notebooks/isic2024_image_models.ipynb)
+2. Kaggle 比賽頁 → **Code → New Notebook → File → Import Notebook**
+3. 右側設定：**GPU**、**Internet On**
+4. 把 `EXP = 'BASE'` 改成你的編號 → **Save Version**
 
-Kaggle 上怎麼跑、怎麼提交 → [docs/01_環境與執行.md](docs/01_環境與執行.md)
+詳細步驟與出問題怎麼辦 → [docs/01_操作說明.md](docs/01_操作說明.md)
 
 ## 資料夾結構
 
