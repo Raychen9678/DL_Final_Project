@@ -7,10 +7,11 @@
 
 輸出：
     reports/eda_summary.txt
-    reports/figures/01_class_balance.png
-    reports/figures/02_images_per_patient.png
-    reports/figures/03_malignant_rate_by_site.png
-    reports/figures/04_malignant_rate_by_age.png
+    reports/figures/eda_01_class_balance.png
+    reports/figures/eda_02_images_per_patient.png
+    reports/figures/eda_03_malignant_rate_by_site.png
+    reports/figures/eda_04_malignant_rate_by_age.png
+    reports/figures/eda_05_correlation_heatmap.png
 """
 
 import argparse
@@ -68,26 +69,42 @@ def plot(train: pd.DataFrame, s: dict) -> None:
     train["target"].value_counts().sort_index().plot.bar(ax=ax, logy=True, color=["#8FB3B0", "#C4553E"])
     ax.set_xticklabels(["benign (0)", "malignant (1)"], rotation=0)
     ax.set_title("Class balance (log scale)")
-    save(fig, "01_class_balance.png")
+    save(fig, "eda_01_class_balance.png")
 
     fig, ax = plt.subplots(figsize=(6, 4))
     s["per_patient"].plot.hist(bins=60, ax=ax, color="#12343B")
     ax.set_xlabel("images per patient")
     ax.set_title("Images per patient")
-    save(fig, "02_images_per_patient.png")
+    save(fig, "eda_02_images_per_patient.png")
 
     fig, ax = plt.subplots(figsize=(6, 4))
     s["site"]["mean"].sort_values().plot.barh(ax=ax, color="#C4553E")
     ax.set_xlabel("malignant rate (%)")
     ax.set_title("Malignant rate by anatomic site")
-    save(fig, "03_malignant_rate_by_site.png")
+    save(fig, "eda_03_malignant_rate_by_site.png")
 
     fig, ax = plt.subplots(figsize=(6, 4))
     s["age"].plot.bar(ax=ax, color="#12343B", rot=0)
     ax.set_xlabel("age")
     ax.set_ylabel("malignant rate (%)")
     ax.set_title("Malignant rate by age")
-    save(fig, "04_malignant_rate_by_age.png")
+    save(fig, "eda_04_malignant_rate_by_age.png")
+
+    # 相關性熱力圖：跟 target 相關最高的 7 個數值特徵
+    num = [c for c in train.columns if pd.api.types.is_numeric_dtype(train[c]) and c != "target"]
+    top = train[num].corrwith(train["target"]).abs().sort_values(ascending=False).head(7).index.tolist()
+    corr = train[top + ["target"]].corr()
+    fig, ax = plt.subplots(figsize=(8, 7))
+    im = ax.imshow(corr, cmap="RdBu_r", vmin=-1, vmax=1)
+    ax.set_xticks(range(len(corr)), corr.columns, rotation=45, ha="right")
+    ax.set_yticks(range(len(corr)), corr.columns)
+    for i in range(len(corr)):
+        for j in range(len(corr)):
+            v = corr.iloc[i, j]
+            ax.text(j, i, f"{v:.2f}", ha="center", va="center", fontsize=9, color="white" if abs(v) > 0.6 else "black")
+    fig.colorbar(im, ax=ax, shrink=0.8)
+    ax.set_title("Correlation heatmap (top 7 features vs target)")
+    save(fig, "eda_05_correlation_heatmap.png")
 
 
 def main() -> None:

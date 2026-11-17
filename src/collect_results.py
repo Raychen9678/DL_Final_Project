@@ -32,6 +32,12 @@ def load() -> pd.DataFrame:
             if len(hit) and exp not in {r["exp"] for r in rows}:
                 rows.append(dict(exp=exp, member="E", variable="輸入資料（只用表格）", change=model,
                                  oof_pauc=float(hit.oof_pauc.iloc[0]), minutes=None))
+    lgb_txt = REPORTS_DIR / "cv_lgbm.txt"
+    if lgb_txt.exists():
+        for line in lgb_txt.read_text(encoding="utf-8").splitlines():
+            if line.startswith("OOF pAUC"):
+                rows.append(dict(exp="LGBM", member="E", variable="對照組（只用表格）", change="LightGBM",
+                                 oof_pauc=float(line.split("=")[1].split()[0]), minutes=None))
     return pd.DataFrame(rows)
 
 
