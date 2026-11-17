@@ -17,11 +17,9 @@ import time
 import lightgbm as lgb
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import StratifiedGroupKFold
 
-from config import (LGB_PARAMS, MODELS_DIR, N_FOLDS, NEG_RATIO, REPORTS_DIR, SEED,
-                    SUBMISSION_CSV, ensure_dirs)
-from features import build_features, load_data
+from config import LGB_PARAMS, MODELS_DIR, NEG_RATIO, REPORTS_DIR, SEED, SUBMISSION_CSV, ensure_dirs
+from features import build_features, load_data, make_folds
 from metric import pauc_above_tpr
 
 
@@ -41,10 +39,9 @@ def main() -> None:
         print(f"已加入 CNN 特徵（{cnn_oof.name}）")
     print(f"train {train.shape}，惡性 {int(train.target.sum())} 筆，{len(features)} 個特徵")
 
-    sgkf = StratifiedGroupKFold(n_splits=N_FOLDS, shuffle=True, random_state=SEED)
     oof = np.zeros(len(train))
     models, lines = [], []
-    for fold, (tr, va) in enumerate(sgkf.split(train, train["target"], train["patient_id"])):
+    for fold, (tr, va) in enumerate(make_folds(train)):
         d = train.iloc[tr]
         pos = d[d["target"] == 1]
         neg = d[d["target"] == 0].sample(len(pos) * NEG_RATIO, random_state=SEED)

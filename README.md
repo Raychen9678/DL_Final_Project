@@ -14,76 +14,113 @@
 | 資料 | 401,059 張圖，惡性只有 **393 張（0.098%）**，1,042 位病人 |
 | 繳交 | Code Competition，要在 Kaggle Notebook 上跑出 `submission.csv`；比賽已結束，可 Late Submission |
 
-## 目前進度
+## 模型規劃
 
-| 版本 | 5 折 CV pAUC |
+以深度學習為主軸、LightGBM 為強對照組，模型選擇對應課程內容：
+
+| 資料 | 模型 | 對應課程 | 狀態 |
+|---|---|---|---|
+| 表格 | Logistic Regression（＝單層感知器 + sigmoid） | W1 Perceptron | ✅ 0.103 |
+| 表格 | **MLP**（256-128，BatchNorm、Dropout、ReLU） | W1 MLP、W6 BN/Dropout | ✅ **0.159** |
+| 表格 | LightGBM（對照組） | — | ✅ 0.161 |
+| 圖片 | Simple CNN（自己搭的 Conv-BN-ReLU-MaxPool ×4） | W5 CNN | 程式完成，待 GPU |
+| 圖片 | ResNet-18（ImageNet 預訓練） | W5 Advanced CNNs | 程式完成，待 GPU |
+| 圖片 | EfficientNet-B0（ImageNet 預訓練） | 延伸 | 程式完成，待 GPU |
+| 圖片 | ViT-Tiny（ImageNet 預訓練） | W8 Vision Transformer | 程式完成，待 GPU |
+| 融合 | Stacking：圖片模型預測當 LightGBM 特徵 | — | 程式完成，待 GPU |
+| 融合 | 多模態網路：CNN 分支 + MLP 分支端到端訓練 | W5 + W1 | 程式完成，待 GPU |
+
+**共同設定**：BCEWithLogitsLoss（W4）、AdamW（W6）、每個 epoch 重新抽樣良性（處理不平衡）、
+以驗證 pAUC 做 Early Stopping（W6）、所有模型共用同一種按病人分組的 5 折切分（`src/features.py: make_folds`）。
+
+## 目前結果（5 折 OOF pAUC，上限 0.2）
+
+| 模型 | pAUC |
 |---|---|
-| LightGBM + 正樣本加權 | 0.031 |
-| LightGBM 小模型 + 正則化 | 0.156 |
-| **+ 病人內標準化特徵** | **0.161** |
-| EfficientNet-B0（圖片） | 程式已完成，待在 Kaggle GPU 上訓練 |
-| LightGBM + CNN 融合 | 程式已完成，待 CNN 結果 |
+| Logistic Regression | 0.103 |
+| MLP | 0.159 |
+| LightGBM | **0.161** |
 
-- 驗證集按 `patient_id` 切（StratifiedGroupKFold），同一位病人的圖不會同時出現在訓練和驗證
-- 病人內標準化：每顆病灶的特徵減掉同一位病人的平均，衡量「跟這個人其他痣比有多特別」
-- 正樣本太少，`scale_pos_weight` 會嚴重過擬合；模型要小、要正則化
+![ROC 比較](figures/08_roc_comparison.png)
+
+**消融實驗（MLP，`python src/train_mlp.py --ablation`）**
+
+| 實驗 | 設定 | pAUC |
+|---|---|---|
+| 優化器 | SGD + Momentum / Adam / AdamW | 0.158 / 0.150 / 0.154 |
+| 正則化 | 無 / 只有 Dropout / 只有 BN / BN + Dropout | 0.154 / 0.153 / 0.150 / 0.154 |
+
+<p>
+<img src="figures/05_optimizer_comparison.png" width="49%">
+<img src="figures/07_overfitting_curve.png" width="49%">
+</p>
+
+**發現**
+- 線性模型明顯不夠（0.103），特徵之間需要非線性組合；MLP 與 LightGBM 幾乎一樣
+- Adam / AdamW 收斂快（約 5–10 epoch 達到最高），之後驗證分數下滑並震盪；SGD + Momentum 收斂慢但比較穩定
+- 不加正則化時 train loss 持續下降、驗證 pAUC 約第 10 epoch 後開始下滑 → 典型 overfitting，所以需要 early stopping
+- 正樣本只有 393 個，LightGBM 加 `scale_pos_weight=10` 反而掉到 0.031；模型要小、要正則化
+- 病人內標準化特徵（這顆痣和同一人其他痣比有多特別）在每個模型都有幫助
 
 ## 怎麼跑
 
 **在 Kaggle 上**（比賽頁 → Code → New Notebook → File → Import Notebook）：
 
-| 順序 | Notebook | 設定 | 用途 |
-|---|---|---|---|
-| 1 | `isic2024_baseline.ipynb` | CPU，Internet 關 | metadata baseline，可直接提交 |
-| 2 | `isic2024_cnn_train.ipynb` | **GPU，Internet 開** | 訓練 CNN，輸出權重和 `oof_cnn.csv`；跑完按 Save Version |
-| 3 | `isic2024_submission.ipynb` | **GPU，Internet 關** | Add Input 加入第 2 個 notebook 的輸出，融合後提交 |
+| Notebook | 設定 | 用途 |
+|---|---|---|
+| `isic2024_baseline.ipynb` | CPU，Internet 關 | metadata baseline、EDA 圖，可直接提交 |
+| `isic2024_image_models.ipynb` | **GPU，Internet 開** | 改 `CFG['model']` 切換 4 種圖片模型，每種存一個版本 |
+| `isic2024_multimodal.ipynb` | **GPU，Internet 開** | 多模態網路（實驗比較用） |
+| `isic2024_submission.ipynb` | **GPU，Internet 關** | Add Input 加入圖片模型的輸出（自動偵測），融合後提交 |
 
-第 3 個 notebook 開頭的 `CNN_DIR` 要改成第 2 個 notebook 輸出在右側 Input 顯示的路徑。
-
-**在自己電腦上（做實驗）**：
+**在自己電腦上**：
 
 ```bash
 pip install -r requirements.txt
-python src/download_data.py    # 從 ISIC 官網下載 metadata（約 90 MB，不用 Kaggle 帳號）
-python src/eda.py              # 資料分析 → reports/
-python src/train_lgbm.py       # 5 折 CV，約 1 分鐘
+python src/download_data.py         # 從 ISIC 官網下載 metadata（約 90 MB，不用 Kaggle 帳號）
+python src/eda.py                   # 資料分析 → reports/
+python src/train_lgbm.py            # LightGBM 5 折，約 10 秒
+python src/train_mlp.py             # Logistic Regression + MLP 5 折（需要 PyTorch），約 30 秒
+python src/train_mlp.py --ablation  # 再加優化器、正則化消融實驗，約 4 分鐘
 ```
-
-要圖片的話用 `python src/download_data.py --kaggle`（約 2.7 GB，需要 Kaggle API token）。
 
 ## 檔案
 
 ```
-notebooks/isic2024_baseline.ipynb   metadata baseline
-notebooks/isic2024_cnn_train.ipynb  EfficientNet-B0 訓練（產生 CNN 特徵）
-notebooks/isic2024_submission.ipynb LightGBM + CNN 融合，最終提交
-report/書面報告_草稿.md               W17 書面報告草稿
-src/config.py                       路徑與參數
-src/download_data.py                下載資料
-src/eda.py                          資料分析
-src/features.py                     特徵工程
-src/metric.py                       官方 pAUC 評分
-src/train_lgbm.py                   LightGBM + 5 折 CV（reports/oof_cnn.csv 存在時自動加入 CNN 特徵）
+notebooks/isic2024_baseline.ipynb       metadata baseline + EDA 圖
+notebooks/isic2024_image_models.ipynb   圖片模型：SimpleCNN / ResNet-18 / EfficientNet-B0 / ViT-Tiny
+notebooks/isic2024_multimodal.ipynb     多模態網路（CNN + MLP）
+notebooks/isic2024_submission.ipynb     LightGBM + 圖片模型特徵，最終提交
+src/config.py                           路徑與參數
+src/download_data.py                    下載資料
+src/eda.py                              資料分析
+src/features.py                         特徵工程、共用的 5 折切分
+src/metric.py                           官方 pAUC 評分
+src/train_lgbm.py                       LightGBM
+src/train_mlp.py                        Logistic Regression、MLP、消融實驗、ROC 圖
+figures/                                實驗結果圖
+report/書面報告_草稿.md                   W17 書面報告草稿
+report/分工與時程.md                      每個人的工作與期限
 ```
 
 ## 分工
 
-每人主責一個流程，每個階段都有任務。
+每人主責一個流程，每個階段都有任務。每週詳細進度見 [report/分工與時程.md](report/分工與時程.md)。
 
-| 成員（主責） | 相關程式 | W12 | W14 | W15 | W17 報告 |
-|---|---|---|---|---|---|
-| [組員 A] ① 資料分析 | `src/eda.py` | EDA、資料分析頁 | 圖片 EDA、CNN 錯誤案例分析 | 整理所有實驗圖表 | 第 2、3 章、報告整合 |
-| [組員 B] ② 驗證與評分 | `src/metric.py` | 按病人切 5 折、pAUC | ROC 曲線比較各模型 | 融合權重與門檻分析 | 1.2、4.1 節 |
-| [組員 C] ③ 表格模型 | `src/features.py`、`src/train_lgbm.py`、baseline notebook | LightGBM baseline | 新增特徵、調參 | 融合後特徵重要度分析 | 4.2、4.3、5.1 節 |
-| [組員 D] ④ 圖片模型 | `isic2024_cnn_train.ipynb` | CNN 架構與資料增強規劃 | EfficientNet 訓練 | CNN 改進（更大模型、TTA） | 4.4、5.2 節 |
-| [組員 E] ⑤ 融合與提交 | `isic2024_submission.ipynb` | Kaggle 提交流程、第一次提交 | 用初版 CNN 測試融合 | 最終融合與提交 | 4.5、第 6、7 章 |
+| 組員 | 主責流程 | 模型 / 實驗 | 相關程式 |
+|---|---|---|---|
+| [組員 A] | ① 資料分析 | EDA、圖片 EDA、CNN 錯誤案例分析 | `src/eda.py` |
+| [組員 B] | ② 驗證與評分 | pAUC、ROC 比較、優化器與 BN/Dropout 消融 | `src/metric.py`、`src/train_mlp.py --ablation` |
+| [組員 C] | ③ 表格模型 | Logistic Regression、MLP、LightGBM；ResNet-18 | `src/train_mlp.py`、`src/train_lgbm.py`、`src/features.py` |
+| [組員 D] | ④ 圖片模型 | SimpleCNN、EfficientNet-B0、ViT-Tiny | `isic2024_image_models.ipynb` |
+| [組員 E] | ⑤ 融合與提交 | 多模態網路、Stacking、Kaggle 提交 | `isic2024_multimodal.ipynb`、`isic2024_submission.ipynb` |
 
-| 週次 | 目標 |
+| 週次 | 里程碑 |
 |---|---|
-| W12 | metadata baseline（CV pAUC 0.161）、5 頁進度簡報 |
-| W14 | 圖片 CNN baseline、10 頁進度簡報 |
-| W15 | CNN＋LightGBM 融合、繳交程式 |
-| W15–16 | 成果報告與口試 |
+| W12 | 5 頁進度簡報；表格模型完成（MLP 0.159、LightGBM 0.161） |
+| W13 | 4 種圖片模型、多模態網路在 Kaggle GPU 上訓練 |
+| W14 | 10 頁進度簡報；圖片模型比較、融合結果 |
+| W15–16 | 繳交程式、口試 |
 | W17 | 書面報告、最終程式碼 |
 
 ## 資料來源

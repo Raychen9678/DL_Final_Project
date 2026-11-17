@@ -7,8 +7,16 @@
 """
 
 import pandas as pd
+from sklearn.model_selection import StratifiedGroupKFold
 
-from config import DROP_COLS, NO_PATIENT_NORM, TEST_META_CSV, TRAIN_META_CSV
+from config import DROP_COLS, N_FOLDS, NO_PATIENT_NORM, SEED, TEST_META_CSV, TRAIN_META_CSV
+
+
+def make_folds(train: pd.DataFrame) -> list:
+    """所有模型共用同一種切法：按 patient_id 分組、按 target 分層的 5 折。
+    圖片模型（Kaggle notebook）也用相同參數，融合時才不會資料洩漏。"""
+    sgkf = StratifiedGroupKFold(n_splits=N_FOLDS, shuffle=True, random_state=SEED)
+    return list(sgkf.split(train, train["target"], train["patient_id"]))
 
 
 def load_data():

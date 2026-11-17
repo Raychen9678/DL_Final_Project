@@ -3,6 +3,9 @@ pandas>=2.0
 scikit-learn>=1.3
 lightgbm>=4.0
 matplotlib
-# 圖片模型才需要
+torch>=2.0        # MLP；GPU 版請照 https://pytorch.org 的指令安裝
+# 圖片模型才需要（通常直接在 Kaggle 上跑）
+torchvision
+timm              # ViT
 h5py
 pillow
