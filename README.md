@@ -67,13 +67,15 @@ src/train_lgbm.py                   LightGBM + 5 折 CV（reports/oof_cnn.csv �
 
 ## 分工
 
-| 成員 | 負責 | 相關程式 |
+一人負責一個流程，從程式、簡報到書面報告都包含自己那段。
+
+| 成員 | 流程 | 相關程式 |
 |---|---|---|
-| [組員 A] | 資料分析、簡報 | `src/eda.py` |
-| [組員 B] | 圖片模型（EfficientNet 微調、資料增強） | 待新增 |
-| [組員 C] | 特徵工程（metadata 特徵、病人內標準化） | `src/features.py` |
-| [組員 D] | LightGBM 調參、模型融合 | `src/train_lgbm.py` |
-| [組員 E] | 驗證流程、Kaggle 提交、GitHub | `src/metric.py`、`notebooks/` |
+| [組員 A] | ① 資料分析 | `src/eda.py` |
+| [組員 B] | ② 驗證與評分 | `src/metric.py` |
+| [組員 C] | ③ 表格模型 | `src/features.py`、`src/train_lgbm.py`、`notebooks/isic2024_baseline.ipynb` |
+| [組員 D] | ④ 圖片模型 | `notebooks/isic2024_cnn_train.ipynb` |
+| [組員 E] | ⑤ 融合與提交 | `notebooks/isic2024_submission.ipynb` |
 
 | 週次 | 目標 |
 |---|---|
