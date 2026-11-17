@@ -14,6 +14,7 @@
 | **看我自己的任務卡**（要跑什麼、簡報哪頁、報告寫哪節） | [docs/04_任務卡.md](docs/04_任務卡.md) |
 | 看用了哪些模型、結果如何 | [docs/02_模型與實驗.md](docs/02_模型與實驗.md) |
 | 寫書面報告 | [report/書面報告_草稿.md](report/書面報告_草稿.md) |
+| 看 W12 簡報 | [Canva 簡報](https://www.canva.com/design/DAHbJGLOTRo/V8vQRciYleZlanllEZBFSA/edit) |
 
 ---
 
@@ -52,6 +53,8 @@
 每個人要做什麼 → [docs/04_任務卡.md](docs/04_任務卡.md)
 
 ## W12 繳交檢核表（11/25 前）
+
+📎 **簡報（Canva）**：<https://www.canva.com/design/DAHbJGLOTRo/V8vQRciYleZlanllEZBFSA/edit>
 
 老師要求：清晰易懂的簡報 **5 頁以上**（標題頁不算），一組一份。我們的簡報共 8 頁。
 
