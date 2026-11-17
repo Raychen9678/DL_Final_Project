@@ -22,9 +22,21 @@ _force_utf8_stdout()
 # ---------------------------------------------------------------- 路徑
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
-# 在 Kaggle Notebook 上跑時，資料已經掛在 /kaggle/input，不用下載
-KAGGLE_INPUT = Path("/kaggle/input/isic-2024-challenge")
-RAW_DIR = KAGGLE_INPUT if KAGGLE_INPUT.exists() else PROJECT_ROOT / "data" / "raw"
+# 在 Kaggle Notebook 上跑時，資料已經掛在 /kaggle/input 底下，不用下載。
+# 掛載路徑會變（例如多一層 competitions/），所以用搜尋的。
+def _find_kaggle_data() -> Path | None:
+    root = Path("/kaggle/input")
+    if not root.exists():
+        return None
+    for depth in range(1, 4):
+        hits = sorted(root.glob("/".join(["*"] * depth) + "/train-metadata.csv"),
+                      key=lambda p: ("isic-2024-challenge" not in str(p), str(p)))
+        if hits:
+            return hits[0].parent
+    return None
+
+
+RAW_DIR = _find_kaggle_data() or PROJECT_ROOT / "data" / "raw"
 
 TRAIN_META_CSV = RAW_DIR / "train-metadata.csv"
 TEST_META_CSV = RAW_DIR / "test-metadata.csv"
