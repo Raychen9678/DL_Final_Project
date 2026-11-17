@@ -67,15 +67,15 @@ src/train_lgbm.py                   LightGBM + 5 折 CV（reports/oof_cnn.csv �
 
 ## 分工
 
-一人負責一個流程，從程式、簡報到書面報告都包含自己那段。
+每人主責一個流程，每個階段都有任務。
 
-| 成員 | 流程 | 相關程式 |
-|---|---|---|
-| [組員 A] | ① 資料分析 | `src/eda.py` |
-| [組員 B] | ② 驗證與評分 | `src/metric.py` |
-| [組員 C] | ③ 表格模型 | `src/features.py`、`src/train_lgbm.py`、`notebooks/isic2024_baseline.ipynb` |
-| [組員 D] | ④ 圖片模型 | `notebooks/isic2024_cnn_train.ipynb` |
-| [組員 E] | ⑤ 融合與提交 | `notebooks/isic2024_submission.ipynb` |
+| 成員（主責） | 相關程式 | W12 | W14 | W15 | W17 報告 |
+|---|---|---|---|---|---|
+| [組員 A] ① 資料分析 | `src/eda.py` | EDA、資料分析頁 | 圖片 EDA、CNN 錯誤案例分析 | 整理所有實驗圖表 | 第 2、3 章、報告整合 |
+| [組員 B] ② 驗證與評分 | `src/metric.py` | 按病人切 5 折、pAUC | ROC 曲線比較各模型 | 融合權重與門檻分析 | 1.2、4.1 節 |
+| [組員 C] ③ 表格模型 | `src/features.py`、`src/train_lgbm.py`、baseline notebook | LightGBM baseline | 新增特徵、調參 | 融合後特徵重要度分析 | 4.2、4.3、5.1 節 |
+| [組員 D] ④ 圖片模型 | `isic2024_cnn_train.ipynb` | CNN 架構與資料增強規劃 | EfficientNet 訓練 | CNN 改進（更大模型、TTA） | 4.4、5.2 節 |
+| [組員 E] ⑤ 融合與提交 | `isic2024_submission.ipynb` | Kaggle 提交流程、第一次提交 | 用初版 CNN 測試融合 | 最終融合與提交 | 4.5、第 6、7 章 |
 
 | 週次 | 目標 |
 |---|---|
