@@ -1,6 +1,7 @@
 # ISIC 2024 皮膚癌偵測
 
 深度學習期末專題。競賽：[ISIC 2024 - Skin Cancer Detection with 3D-TBP](https://www.kaggle.com/competitions/isic-2024-challenge)
+給電腦看一張皮膚上痣或斑點的照片，加上病人的基本資料，讓它判斷這顆是不是皮膚癌。
 
 ## 題目
 
