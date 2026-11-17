@@ -42,7 +42,7 @@
 1. 下載 [`notebooks/isic2024_image_models.ipynb`](notebooks/isic2024_image_models.ipynb)
 2. Kaggle 比賽頁 → **Code → New Notebook → File → Import Notebook**
 3. 右側設定：**GPU**、**Internet On**
-4. 把 `EXP = 'BASE'` 改成你的編號 → **Save Version**
+4. 把 `EXP = 'BASE'` 改成你的編號（[編號表](docs/03_分工與時程.md#實驗編號一覽)）→ **Save Version**
 
 詳細步驟與出問題怎麼辦 → [docs/01_操作說明.md](docs/01_操作說明.md)
 
@@ -53,9 +53,9 @@
 ├── docs/                         說明文件（先看這裡）
 ├── notebooks/
 │   ├── isic2024_baseline.ipynb       metadata baseline + EDA 圖
-│   ├── isic2024_image_models.ipynb   圖片模型（4 種架構）
-│   ├── isic2024_multimodal.ipynb     多模態網路
-│   └── isic2024_submission.ipynb     融合、最終提交
+│   ├── isic2024_image_models.ipynb   圖片實驗（改 EXP 跑不同設定）
+│   ├── isic2024_multimodal.ipynb     多模態網路（E4）
+│   └── isic2024_submission.ipynb     融合、最終提交（E3）
 ├── src/
 │   ├── config.py           路徑與參數
 │   ├── download_data.py    下載資料
@@ -63,8 +63,10 @@
 │   ├── features.py         特徵、共用的 5 折切分
 │   ├── metric.py           官方 pAUC
 │   ├── train_lgbm.py       LightGBM
-│   └── train_mlp.py        LR、MLP、消融實驗
+│   ├── train_mlp.py        LR、MLP、消融實驗
+│   └── collect_results.py  彙整全組實驗結果
 ├── figures/                實驗結果圖
+├── results/                各人的實驗結果 json、全組比較表 summary.md
 ├── report/                 書面報告草稿
 └── data/、models/、reports/  執行後產生（不上傳）
 ```

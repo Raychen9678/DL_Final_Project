@@ -6,7 +6,7 @@ Metadata baseline：LightGBM + 按病人分組的 5-fold CV。
 
 輸出：
     reports/cv_lgbm.txt              每折與整體 OOF pAUC
-    reports/oof_lgbm.csv             每筆訓練資料的 OOF 預測（之後做模型融合用）
+    reports/oof_lgbm.csv             每筆訓練資料的 OOF 預測（ROC 比較圖用）
     reports/feature_importance.csv   特徵重要度
     models/lgbm_fold{k}.txt          各折模型
     submission.csv                   有 test-metadata.csv 時才會產生
@@ -28,15 +28,7 @@ def main() -> None:
     t0 = time.time()
     train, test = load_data()
     train, test, features = build_features(train, test)
-
-    # 模型融合：有 CNN 的 OOF 預測（Kaggle 上 isic2024_cnn_train 的輸出）就當成特徵
-    cnn_oof = REPORTS_DIR / "oof_cnn.csv"
-    if cnn_oof.exists():
-        train = train.merge(pd.read_csv(cnn_oof), on="isic_id", how="left")
-        train["cnn_pred_pnorm"] = train.groupby("patient_id")["cnn_pred"].rank(pct=True)
-        features = features + ["cnn_pred", "cnn_pred_pnorm"]
-        test = None  # 本機沒有測試圖片的 CNN 預測，submission 請用 Kaggle 的 isic2024_submission
-        print(f"已加入 CNN 特徵（{cnn_oof.name}）")
+    # 加入圖片模型特徵的融合（Stacking，實驗 E3）在 Kaggle 的 isic2024_submission notebook 做
     print(f"train {train.shape}，惡性 {int(train.target.sum())} 筆，{len(features)} 個特徵")
 
     oof = np.zeros(len(train))
