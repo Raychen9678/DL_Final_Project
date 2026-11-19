@@ -16,6 +16,7 @@
 | | 跑我負責的實驗（照步驟點，不用裝東西） | [docs/01_操作說明.md](docs/01_操作說明.md) |
 | | 看整體做法、用了哪些模型、結果如何 | [docs/02_模型與實驗.md](docs/02_模型與實驗.md) |
 | | 寫書面報告 | [report/書面報告_草稿.md](report/書面報告_草稿.md) |
+| | 一份 PDF 看懂整個專題（9 頁：現在該做什麼、方法、結果、分工） | [docs/ISIC2024_專題說明.pdf](docs/ISIC2024_專題說明.pdf) |
 | | 看 W12 簡報 | [Canva 簡報](https://www.canva.com/design/DAHbJGLOTRo/V8vQRciYleZlanllEZBFSA/edit) |
 
 ---
