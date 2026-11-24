@@ -1,0 +1,34 @@
+{
+ "exp": "BASE",
+ "member": "全部",
+ "variable": "共同基準",
+ "change": {},
+ "kind": "image",
+ "cfg": {
+  "model": "efficientnet_b0",
+  "img": 128,
+  "optimizer": "adamw",
+  "lr": 0.0003,
+  "aug": "basic",
+  "dropout": 0.3,
+  "neg_ratio": 20,
+  "loss": "bce",
+  "pos_weight": 1.0,
+  "epochs": 10,
+  "patience": 3,
+  "bs": 128,
+  "eval_neg": 20000,
+  "workers": 4,
+  "pretrained": true
+ },
+ "oof_pauc": 0.1379197559727176,
+ "fold_pauc": [
+  0.13522331133173537,
+  0.12211903602726384,
+  0.15957294150501597,
+  0.12891103582573848,
+  0.15599470607919946
+ ],
+ "params_m": 4.008829,
+ "minutes": 40.29837520519892
+}

@@ -1,0 +1,37 @@
+{
+ "exp": "C4",
+ "member": "C",
+ "variable": "資料增強",
+ "change": {
+  "aug": "strong",
+  "dropout": 0.0
+ },
+ "kind": "image",
+ "cfg": {
+  "model": "efficientnet_b0",
+  "img": 128,
+  "optimizer": "adamw",
+  "lr": 0.0003,
+  "aug": "strong",
+  "dropout": 0.0,
+  "neg_ratio": 20,
+  "loss": "bce",
+  "pos_weight": 1.0,
+  "epochs": 10,
+  "patience": 3,
+  "bs": 128,
+  "eval_neg": 20000,
+  "workers": 4,
+  "pretrained": true
+ },
+ "oof_pauc": 0.13463542273361667,
+ "fold_pauc": [
+  0.1378545704603419,
+  0.12838028425741682,
+  0.15889519022147747,
+  0.13210398898533138,
+  0.15186292919247896
+ ],
+ "params_m": 4.008829,
+ "minutes": 41.079202524820964
+}
