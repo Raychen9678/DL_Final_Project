@@ -19,4 +19,4 @@
 - `history_*.csv`：每個 fold、每個 epoch 的 train_loss / val_loss / val_pAUC
 - `summary_C.csv`：五個實驗總表
 - 圖：`figures/C/C_pauc_comparison.png`、`figures/C/C_overfitting_BASE_vs_C1.png`、各實驗訓練曲線 `figures/C/curves_*.png`
-- W14 簡報（Canva）：[W14](https://www.canva.com/design/DAHb1b1lejc/edit)
+- W14 簡報（Canva）：[W14](https://canva.link/zdn0mil8oyhi81y)

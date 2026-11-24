@@ -19,7 +19,7 @@
 | | 寫書面報告 | [report/書面報告_草稿.md](report/書面報告_草稿.md) |
 | | 一份 PDF 看懂整個專題（9 頁：現在該做什麼、方法、結果、分工） | [docs/ISIC2024_專題說明.pdf](docs/ISIC2024_專題說明.pdf) |
 | | 看 W12 簡報 | [Canva 簡報](https://www.canva.com/design/DAHbJGLOTRo/V8vQRciYleZlanllEZBFSA/edit) |
-| | 看 W14 簡報 | [W14](https://www.canva.com/design/DAHb1b1lejc/edit) |
+| | 看 W14 簡報 | [W14](https://canva.link/zdn0mil8oyhi81y) |
 
 ---
 
